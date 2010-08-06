@@ -25,15 +25,15 @@ class View:
         # 顯示視窗畫面
         self.window.show_all()
 
-#        # 設定事件
-#        dic = {"on_window1_destory" : gtk.main_quit,
-#        	"on_btn1_button_press_event" : self.on_btn1_button_press_event,
-#        	}
-#        # 連結事件
-#        self.UI.signal_autoconnect(dic)
+        # 設定事件
+        dic = {"on_window1_destory" : gtk.main_quit,
+        	"on_btn1_button_press_event" : self.on_btn1_button_press_event,
+        	}
+        # 連結事件
+        self.UI.signal_autoconnect(dic)
 
-#    def on_btn1_button_press_event(self, widget, event):
-#        print "hello"
+    def on_btn1_button_press_event(self, widget, event):
+        print "hello"
 
 def main():
     gtk.main()
