@@ -4,6 +4,9 @@
 # A tool for ip test and scan
 
 import sys
+from threading import Thread
+import re
+import os
 try:
     import pygtk
     pygtk.require("2.0")
@@ -48,6 +51,25 @@ class Main_Window:
             print self.entry1.get_text()
 	    print self.entry2.get_text()
 	    print self.entry3.get_text()
+
+	    # test icmp_scan function
+	    ip_list = []
+	    ip_list.append(self.entry1.get_text())
+	    self.icmp_scan(ip_list)
+
+    def icmp_scan(self, ip_list):
+        pinglist = []
+        for ip in ip_list:
+            current = ping(ip)
+            pinglist.append(current)
+            current.start()
+
+        ping.lifeline = re.compile(r"(\d) received")
+        report = ("No response","Partial Response","Alive")
+    
+        for pingle in pinglist:
+            pingle.join()
+            print "Status from ",pingle.ip,"is",report[pingle.status]
 	
 class Dialog:
     def __init__(self, message):
@@ -66,6 +88,20 @@ class Dialog:
 
     def widget_close(self, widget, event):
         gtk.Window.destroy(self.warning_dialog)
+
+class ping(Thread):
+    def __init__ (self,ip):
+        Thread.__init__(self)
+        self.ip = ip
+        self.status = -1
+    def run(self):
+        pingaling = os.popen("ping -q -c2 "+self.ip,"r")
+        while 1:
+            line = pingaling.readline()
+            if not line: break
+            igot = re.findall(ping.lifeline,line)
+            if igot:
+                self.status = int(igot[0])
 
 def main():
     gtk.main()
