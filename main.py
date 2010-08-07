@@ -25,6 +25,10 @@ class View:
         self.window = self.UI.get_widget("window1")
         # 載入元件
         self.btn1 = self.UI.get_widget("button1")
+        self.entry1 = self.UI.get_widget("entry1")
+        self.entry2 = self.UI.get_widget("entry2")
+        self.entry3 = self.UI.get_widget("entry3")
+        self.clist = self.UI.get_widget("clist1")
         # 顯示視窗畫面
         self.window.show_all()
 
@@ -39,7 +43,9 @@ class View:
         self.btn1.connect('clicked', self.on_btn1_button_press_event, None)
 
     def on_btn1_button_press_event(self, widget, event):
-        print "hello"
+	print self.entry1.get_text()
+	print self.entry2.get_text()
+	print self.entry3.get_text()
 
 def main():
     gtk.main()
