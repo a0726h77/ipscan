@@ -3,7 +3,6 @@
 #
 # A tool for ip test and scan
 
-
 import sys
 try:
     import pygtk
@@ -43,9 +42,30 @@ class View:
         self.btn1.connect('clicked', self.on_btn1_button_press_event, None)
 
     def on_btn1_button_press_event(self, widget, event):
-	print self.entry1.get_text()
-	print self.entry2.get_text()
-	print self.entry3.get_text()
+	if '' == self.entry1.get_text():
+            Dialog("tttttttttttt..........")
+	else:
+            print self.entry1.get_text()
+	    print self.entry2.get_text()
+	    print self.entry3.get_text()
+	
+class Dialog:
+    def __init__(self, message):
+        self.gladefile = "main.glade"
+        self.UI = gtk.glade.XML(self.gladefile)
+        self.warning_dialog = self.UI.get_widget("window2")
+        self.message_label = self.UI.get_widget("label4")
+        self.btn2 = self.UI.get_widget("button2")
+
+        self.warning_dialog.connect('destroy', self.widget_close, None) 
+        self.btn2.connect('clicked', self.widget_close, None) 
+	
+	self.message_label.set_text(message)
+
+        self.warning_dialog.show_all()
+
+    def widget_close(self, widget, event):
+        gtk.Window.destroy(self.warning_dialog)
 
 def main():
     gtk.main()
