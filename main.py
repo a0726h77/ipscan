@@ -45,18 +45,23 @@ class Main_Window:
         self.btn1.connect('clicked', self.on_btn1_button_press_event, None)
 
     def on_btn1_button_press_event(self, widget, event):
-	if '' == self.entry1.get_text():
-            Dialog("tttttttttttt..........")
-	else:
-            print self.entry1.get_text()
-	    print self.entry2.get_text()
-	    print self.entry3.get_text()
+        ip_list = self.gen_ip_list(self.entry1.get_text(), self.entry2.get_text())
+	# test icmp_scan and lookup_hostname function
+	self.icmp_scan(ip_list)
+        self.lookup_hostname(ip_list)
 
-	    # test icmp_scan and lookup_hostname function
-	    ip_list = []
-	    ip_list.append(self.entry1.get_text())
-	    self.icmp_scan(ip_list)
-            self.lookup_hostname(ip_list)
+    # generate ip list from input entry
+    # Not complete !!
+    def gen_ip_list(self, ip_start, ip_end):
+	ip_list = []
+	if '' == ip_start:
+            Dialog("tttttttttttt..........")
+        elif '' != ip_start and '' == ip_end:
+	    ip_list.append(ip_start)
+        else:
+	    ip_list.append(ip_start)
+	    ip_list.append(ip_end)
+	return ip_list
 
     def icmp_scan(self, ip_list):
         pinglist = []
