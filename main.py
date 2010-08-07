@@ -45,23 +45,10 @@ class Main_Window:
         self.btn1.connect('clicked', self.on_btn1_button_press_event, None)
 
     def on_btn1_button_press_event(self, widget, event):
-        ip_list = self.gen_ip_list(self.entry1.get_text(), self.entry2.get_text())
+        ip_list = gen_ip_list(self.entry1.get_text(), self.entry2.get_text())
 	# test icmp_scan and lookup_hostname function
 	icmp_scan(ip_list)
         lookup_hostname(ip_list)
-
-    # generate ip list from input entry
-    # Not complete !!
-    def gen_ip_list(self, ip_start, ip_end):
-	ip_list = []
-	if '' == ip_start:
-            Dialog("tttttttttttt..........")
-        elif '' != ip_start and '' == ip_end:
-	    ip_list.append(ip_start)
-        else:
-	    ip_list.append(ip_start)
-	    ip_list.append(ip_end)
-	return ip_list
 
 class Dialog:
     def __init__(self, message):
@@ -80,6 +67,19 @@ class Dialog:
 
     def widget_close(self, widget, event):
         gtk.Window.destroy(self.warning_dialog)
+
+# generate ip list from input entry
+# Not complete !!
+def gen_ip_list(ip_start, ip_end):
+    ip_list = []
+    if '' == ip_start:
+        Dialog("tttttttttttt..........")
+    elif '' != ip_start and '' == ip_end:
+        ip_list.append(ip_start)
+    else:
+        ip_list.append(ip_start)
+        ip_list.append(ip_end)
+    return ip_list
 
 def icmp_scan(ip_list):
     pinglist = []
