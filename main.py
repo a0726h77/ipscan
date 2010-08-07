@@ -48,7 +48,7 @@ class Main_Window:
         ip_list = self.gen_ip_list(self.entry1.get_text(), self.entry2.get_text())
 	# test icmp_scan and lookup_hostname function
 	icmp_scan(ip_list)
-        self.lookup_hostname(ip_list)
+        lookup_hostname(ip_list)
 
     # generate ip list from input entry
     # Not complete !!
@@ -62,10 +62,6 @@ class Main_Window:
 	    ip_list.append(ip_start)
 	    ip_list.append(ip_end)
 	return ip_list
-	
-    def lookup_hostname(self, ip_list):
-        print "In lookup_hostname function.."
-        pass
 
 class Dialog:
     def __init__(self, message):
@@ -112,6 +108,10 @@ class ping(Thread):
             igot = re.findall(ping.lifeline,line)
             if igot:
                 self.status = int(igot[0])
+	
+def lookup_hostname(ip_list):
+    print "In lookup_hostname function.."
+    pass
 
 class nmblookup(Thread):
     def __init__ (self,ip):
