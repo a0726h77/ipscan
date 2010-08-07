@@ -15,7 +15,7 @@ try:
 except:
     sys.exit(1)
 
-class View:
+class Main_Window:
     def __init__(self):
         # 載入 glade 檔
         self.gladefile = "main.glade"
@@ -71,5 +71,5 @@ def main():
     gtk.main()
 
 if __name__ == "__main__":
-    tvexample = View()
+    tvexample = Main_Window()
     main()
