@@ -52,10 +52,11 @@ class Main_Window:
 	    print self.entry2.get_text()
 	    print self.entry3.get_text()
 
-	    # test icmp_scan function
+	    # test icmp_scan and lookup_hostname function
 	    ip_list = []
 	    ip_list.append(self.entry1.get_text())
 	    self.icmp_scan(ip_list)
+            self.lookup_hostname(ip_list)
 
     def icmp_scan(self, ip_list):
         pinglist = []
@@ -71,6 +72,10 @@ class Main_Window:
             pingle.join()
             print "Status from ",pingle.ip,"is",report[pingle.status]
 	
+    def lookup_hostname(self, ip_list):
+        print "In lookup_hostname function.."
+        pass
+
 class Dialog:
     def __init__(self, message):
         self.gladefile = "main.glade"
@@ -102,6 +107,21 @@ class ping(Thread):
             igot = re.findall(ping.lifeline,line)
             if igot:
                 self.status = int(igot[0])
+
+class nmblookup(Thread):
+    def __init__ (self,ip):
+        Thread.__init__(self)
+        self.ip = ip
+        self.status = -1
+    def run(self):
+        pingaling = os.popen("nmblookup -A "+self.ip,"r")
+        while 1:
+            line = pingaling.readline()
+            if not line: break
+            print line
+            #igot = re.findall(ping.lifeline,line)
+            #if igot:
+            #    self.status = int(igot[0])
 
 def main():
     gtk.main()
