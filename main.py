@@ -47,7 +47,7 @@ class Main_Window:
     def on_btn1_button_press_event(self, widget, event):
         ip_list = self.gen_ip_list(self.entry1.get_text(), self.entry2.get_text())
 	# test icmp_scan and lookup_hostname function
-	self.icmp_scan(ip_list)
+	icmp_scan(ip_list)
         self.lookup_hostname(ip_list)
 
     # generate ip list from input entry
@@ -62,20 +62,6 @@ class Main_Window:
 	    ip_list.append(ip_start)
 	    ip_list.append(ip_end)
 	return ip_list
-
-    def icmp_scan(self, ip_list):
-        pinglist = []
-        for ip in ip_list:
-            current = ping(ip)
-            pinglist.append(current)
-            current.start()
-
-        ping.lifeline = re.compile(r"(\d) received")
-        report = ("No response","Partial Response","Alive")
-    
-        for pingle in pinglist:
-            pingle.join()
-            print "Status from ",pingle.ip,"is",report[pingle.status]
 	
     def lookup_hostname(self, ip_list):
         print "In lookup_hostname function.."
@@ -98,6 +84,20 @@ class Dialog:
 
     def widget_close(self, widget, event):
         gtk.Window.destroy(self.warning_dialog)
+
+def icmp_scan(ip_list):
+    pinglist = []
+    for ip in ip_list:
+        current = ping(ip)
+        pinglist.append(current)
+        current.start()
+
+    ping.lifeline = re.compile(r"(\d) received")
+    report = ("No response","Partial Response","Alive")
+
+    for pingle in pinglist:
+        pingle.join()
+        print "Status from ",pingle.ip,"is",report[pingle.status]
 
 class ping(Thread):
     def __init__ (self,ip):
