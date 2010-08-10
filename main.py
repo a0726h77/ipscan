@@ -42,6 +42,12 @@ class Main_Window:
 	self.clist.set_column_title(0, 'IP')
 	self.clist.set_column_title(1, 'Status')
 	self.clist.set_column_title(2, 'Hostname')
+	self.clist.set_column_width(0, len(' 888.888.888.888 ')*8)
+	self.clist.set_column_width(1, len('Status')*8)
+	self.clist.set_column_width(2, len('Hostname')*8)
+	self.clist.set_column_justification(0, 'center')
+	self.clist.set_column_justification(1, 'center')
+	self.clist.set_column_justification(2, 'center')
 
         # 顯示視窗畫面
         self.window.show_all()
