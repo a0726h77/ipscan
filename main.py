@@ -82,6 +82,7 @@ class Dialog:
 # generate ip list from input entry
 # Not complete !!
 def gen_ip_list(ip_start, ip_end):
+    global clist
     ip_list = []
     if '' == ip_start:
         Dialog("tttttttttttt..........")
@@ -90,6 +91,8 @@ def gen_ip_list(ip_start, ip_end):
     else:
         ip_list.append(ip_start)
         ip_list.append(ip_end)
+	clist.append([ip_start, '', ''])
+	clist.append([ip_end, '', ''])
     return ip_list
 
 def icmp_scan(ip_list):
