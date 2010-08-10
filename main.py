@@ -98,18 +98,21 @@ def gen_ip_list(ip_start, ip_end):
     global clist
     ip_list = []
     if '' == ip_start:
-        Dialog("tttttttttttt..........")
+        Dialog("Start IP cannot be empty.")
     elif ('' != ip_start) and ('' == ip_end) and (True == is_valid_ip(ip_start)):
         ip_list.append(ip_start)
         clist.append([ip_start, '', ''])
     elif ('' != ip_start) and ('' != ip_end) and (True == is_valid_ip(ip_start)) and (True == is_valid_ip(ip_end)):
-        iprange = IPRange(ip_start, ip_end)
-        for ip in iprange:
-            # strip subnet ip and broadcast ip
-            if None == re.match(".*\.(255|0)$", str(ip)):
-                print str(ip)
-                ip_list.append(str(ip))
-                clist.append([str(ip), '', ''])
+        try:
+            iprange = IPRange(ip_start, ip_end)
+            for ip in iprange:
+                # strip subnet ip and broadcast ip
+                if None == re.match(".*\.(255|0)$", str(ip)):
+                    print str(ip)
+                    ip_list.append(str(ip))
+                    clist.append([str(ip), '', ''])
+        except AddrFormatError:
+            Dialog("lower bound IP greater than upper bound!")
 
 #        ip_list.append(ip_start)
 #        ip_list.append(ip_end)
