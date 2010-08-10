@@ -7,6 +7,7 @@ import sys
 from threading import Thread
 import re
 import os
+import time
 try:
     import pygtk
     pygtk.require("2.0")
@@ -62,11 +63,14 @@ class Main_Window:
         #self.btn1.connect('clicked', self.on_btn1_button_press_event, None)
 
     def on_btn1_button_press_event(self, widget):
+        print time.ctime()
 	self.clist.clear()
         ip_list = gen_ip_list(self.entry1.entry.get_text(), self.entry2.get_text())
         # test icmp_scan and lookup_hostname function
         icmp_scan(ip_list)
         lookup_hostname(ip_list)
+	print time.ctime()
+
 
 class Dialog:
     def __init__(self, message):
