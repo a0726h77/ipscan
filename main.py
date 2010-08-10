@@ -10,6 +10,9 @@ import os
 import time
 import socket
 from netaddr import *
+import fcntl
+import struct
+import array
 try:
     import pygtk
     pygtk.require("2.0")
@@ -38,7 +41,7 @@ class Main_Window:
         self.clist = self.UI.get_widget("clist1")
         clist = self.clist
 
-        interface_ip_list = ['', '192.168.0.1']
+        interface_ip_list = [""] + (get_all_network_interfaces_ip())
         self.entry1.set_popdown_strings(interface_ip_list)
 
         self.clist.column_titles_show()
@@ -127,6 +130,39 @@ def is_valid_ip(ip):
         print 'illegal ip'
         return False
     return True
+
+def get_all_network_interfaces_ip():
+    platform = sys.platform
+    if "win" in platform:
+        pass
+    elif "linux" in platform:
+        def get_ip_address(ifname):
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            return socket.inet_ntoa(fcntl.ioctl(
+            	s.fileno(),
+            	0x8915,  # SIOCGIFADDR
+            	struct.pack('256s', ifname[:15])
+            )[20:24])
+
+        max_possible = 128  # arbitrary. raise if needed.
+        bytes = max_possible * 32
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        names = array.array('B', '\0' * bytes)
+        outbytes = struct.unpack('iL', fcntl.ioctl(
+            s.fileno(),
+            0x8912,  # SIOCGIFCONF
+            struct.pack('iL', bytes, names.buffer_info()[0])
+        ))[0]
+        namestr = names.tostring()
+        #return [namestr[i:i+32].split('\0', 1)[0] for i in range(0, outbytes, 32)]
+
+        iface_list = [namestr[i:i+32].split('\0', 1)[0] for i in range(0, outbytes, 32)]
+	iface_ip_list = []
+        for iface in iface_list:
+            iface_ip_list.append(get_ip_address(iface))
+	return iface_ip_list
+    else:
+        return ['', '192.168.0.1']
 
 def icmp_scan(ip_list):
     global clist
