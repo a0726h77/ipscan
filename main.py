@@ -34,6 +34,15 @@ class Main_Window:
         self.entry3 = self.UI.get_widget("entry3")
         self.clist = self.UI.get_widget("clist1")
 	clist = self.clist
+
+        interface_ip_list = ['', '192.168.0.1']
+	self.entry1.set_popdown_strings(interface_ip_list)
+
+	self.clist.column_titles_show()
+	self.clist.set_column_title(0, 'IP')
+	self.clist.set_column_title(1, 'Status')
+	self.clist.set_column_title(2, 'Hostname')
+
         # 顯示視窗畫面
         self.window.show_all()
 
@@ -43,17 +52,8 @@ class Main_Window:
 	#	}
         # 連結事件
 	#self.UI.signal_autoconnect(dic)
-
 	self.window.connect('destroy', gtk.main_quit) 
         self.btn1.connect('clicked', self.on_btn1_button_press_event, None)
-
-        interface_ip_list = ['', '192.168.0.1']
-	self.entry1.set_popdown_strings(interface_ip_list)
-
-	clist.column_titles_show()
-	clist.set_column_title(0, 'IP')
-	clist.set_column_title(1, 'Status')
-	clist.set_column_title(2, 'Hostname')
 
     def on_btn1_button_press_event(self, widget, event):
         ip_list = gen_ip_list(self.entry1.entry.get_text(), self.entry2.get_text())
