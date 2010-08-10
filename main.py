@@ -100,6 +100,7 @@ def gen_ip_list(ip_start, ip_end):
         Dialog("tttttttttttt..........")
     elif ('' != ip_start) and ('' == ip_end) and (True == is_valid_ip(ip_start)):
         ip_list.append(ip_start)
+        clist.append([ip_start, '', ''])
     elif ('' != ip_start) and ('' != ip_end) and (True == is_valid_ip(ip_start)) and (True == is_valid_ip(ip_end)):
         ip_list.append(ip_start)
         ip_list.append(ip_end)
