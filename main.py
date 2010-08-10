@@ -9,6 +9,7 @@ import re
 import os
 import time
 import socket
+from netaddr import *
 try:
     import pygtk
     pygtk.require("2.0")
@@ -102,10 +103,15 @@ def gen_ip_list(ip_start, ip_end):
         ip_list.append(ip_start)
         clist.append([ip_start, '', ''])
     elif ('' != ip_start) and ('' != ip_end) and (True == is_valid_ip(ip_start)) and (True == is_valid_ip(ip_end)):
-        ip_list.append(ip_start)
-        ip_list.append(ip_end)
-        clist.append([ip_start, '', ''])
-        clist.append([ip_end, '', ''])
+        iprange = IPRange(ip_start, ip_end)
+	for ip in iprange:
+            ip_list.append(str(ip))
+            clist.append([str(ip), '', ''])
+
+#        ip_list.append(ip_start)
+#        ip_list.append(ip_end)
+#        clist.append([ip_start, '', ''])
+#        clist.append([ip_end, '', ''])
     return ip_list
 
 def is_valid_ip(ip):
