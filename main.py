@@ -96,6 +96,7 @@ def gen_ip_list(ip_start, ip_end):
     return ip_list
 
 def icmp_scan(ip_list):
+    global clist
     pinglist = []
     for ip in ip_list:
         current = ping(ip)
@@ -107,7 +108,9 @@ def icmp_scan(ip_list):
 
     for pingle in pinglist:
         pingle.join()
-        print "Status from ",pingle.ip,"is",report[pingle.status]
+        #print "Status from ",pingle.ip,"is",report[pingle.status]
+        if 'Alive' == report[pingle.status]:
+            clist.set_text(ip_list.index(pingle.ip), 1, '●')
 
 class ping(Thread):
     def __init__ (self,ip):
