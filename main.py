@@ -27,7 +27,7 @@ class Main_Window:
         self.window = self.UI.get_widget("window1")
         # 載入元件
         self.btn1 = self.UI.get_widget("button1")
-        self.entry1 = self.UI.get_widget("entry1")
+        self.entry1 = self.UI.get_widget("combo1")
         self.entry2 = self.UI.get_widget("entry2")
         self.entry3 = self.UI.get_widget("entry3")
         self.clist = self.UI.get_widget("clist1")
@@ -44,8 +44,11 @@ class Main_Window:
 	self.window.connect('destroy', gtk.main_quit) 
         self.btn1.connect('clicked', self.on_btn1_button_press_event, None)
 
+        interface_ip_list = ['', '192.168.0.1']
+	self.entry1.set_popdown_strings(interface_ip_list)
+
     def on_btn1_button_press_event(self, widget, event):
-        ip_list = gen_ip_list(self.entry1.get_text(), self.entry2.get_text())
+        ip_list = gen_ip_list(self.entry1.entry.get_text(), self.entry2.get_text())
 	# test icmp_scan and lookup_hostname function
 	icmp_scan(ip_list)
         lookup_hostname(ip_list)

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Sat Aug  7 15:13:15 2010 -->
+<!--Generated with glade3 3.4.5 on Sun Aug  8 08:02:57 2010 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
     <child>
@@ -16,10 +16,9 @@
               </widget>
             </child>
             <child>
-              <widget class="GtkEntry" id="entry1">
+              <widget class="GtkCombo" id="combo1">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="max_length">15</property>
+                <property name="enable_arrows_always">False</property>
               </widget>
               <packing>
                 <property name="position">1</property>
