@@ -8,6 +8,7 @@ from threading import Thread
 import re
 import os
 import time
+import socket
 try:
     import pygtk
     pygtk.require("2.0")
@@ -97,14 +98,22 @@ def gen_ip_list(ip_start, ip_end):
     ip_list = []
     if '' == ip_start:
         Dialog("tttttttttttt..........")
-    elif '' != ip_start and '' == ip_end:
+    elif ('' != ip_start) and ('' == ip_end) and (True == is_valid_ip(ip_start)):
         ip_list.append(ip_start)
-    else:
+    elif ('' != ip_start) and ('' != ip_end) and (True == is_valid_ip(ip_start)) and (True == is_valid_ip(ip_end)):
         ip_list.append(ip_start)
         ip_list.append(ip_end)
         clist.append([ip_start, '', ''])
         clist.append([ip_end, '', ''])
     return ip_list
+
+def is_valid_ip(ip):
+    try:
+        socket.inet_aton(ip)
+    except socket.error:
+        print 'illegal ip'
+        return False
+    return True
 
 def icmp_scan(ip_list):
     global clist
