@@ -56,7 +56,7 @@ class Main_Window:
         self.window.show_all()
 
         # 設定事件
-        dic = {	"on_btn1_button_press_event" : self.on_btn1_button_press_event,
+        dic = { "on_btn1_button_press_event" : self.on_btn1_button_press_event,
                 "on_window1_destory" : gtk.main_quit,
         }
         # 連結事件
@@ -66,12 +66,12 @@ class Main_Window:
 
     def on_btn1_button_press_event(self, widget):
         print time.ctime()
-	self.clist.clear()
+        self.clist.clear()
         ip_list = gen_ip_list(self.entry1.entry.get_text(), self.entry2.get_text())
         # test icmp_scan and lookup_hostname function
         icmp_scan(ip_list)
         lookup_hostname(ip_list)
-	print time.ctime()
+        print time.ctime()
 
 
 class Dialog:
@@ -104,9 +104,12 @@ def gen_ip_list(ip_start, ip_end):
         clist.append([ip_start, '', ''])
     elif ('' != ip_start) and ('' != ip_end) and (True == is_valid_ip(ip_start)) and (True == is_valid_ip(ip_end)):
         iprange = IPRange(ip_start, ip_end)
-	for ip in iprange:
-            ip_list.append(str(ip))
-            clist.append([str(ip), '', ''])
+        for ip in iprange:
+            # strip subnet ip and broadcast ip
+            if None == re.match(".*\.(255|0)$", str(ip)):
+                print str(ip)
+                ip_list.append(str(ip))
+                clist.append([str(ip), '', ''])
 
 #        ip_list.append(ip_start)
 #        ip_list.append(ip_end)
