@@ -18,8 +18,10 @@ try:
 except:
     sys.exit(1)
 
+
 class Main_Window:
     def __init__(self):
+        global clist
         # 載入 glade 檔
         self.gladefile = "main.glade"
         self.UI = gtk.glade.XML(self.gladefile)
@@ -31,6 +33,7 @@ class Main_Window:
         self.entry2 = self.UI.get_widget("entry2")
         self.entry3 = self.UI.get_widget("entry3")
         self.clist = self.UI.get_widget("clist1")
+	clist = self.clist
         # 顯示視窗畫面
         self.window.show_all()
 
@@ -47,10 +50,10 @@ class Main_Window:
         interface_ip_list = ['', '192.168.0.1']
 	self.entry1.set_popdown_strings(interface_ip_list)
 
-	self.clist.column_titles_show()
-	self.clist.set_column_title(0, 'IP')
-	self.clist.set_column_title(1, 'Status')
-	self.clist.set_column_title(2, 'Hostname')
+	clist.column_titles_show()
+	clist.set_column_title(0, 'IP')
+	clist.set_column_title(1, 'Status')
+	clist.set_column_title(2, 'Hostname')
 
     def on_btn1_button_press_event(self, widget, event):
         ip_list = gen_ip_list(self.entry1.entry.get_text(), self.entry2.get_text())
