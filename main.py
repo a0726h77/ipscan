@@ -33,38 +33,38 @@ class Main_Window:
         self.entry2 = self.UI.get_widget("entry2")
         self.entry3 = self.UI.get_widget("entry3")
         self.clist = self.UI.get_widget("clist1")
-	clist = self.clist
+        clist = self.clist
 
         interface_ip_list = ['', '192.168.0.1']
-	self.entry1.set_popdown_strings(interface_ip_list)
+        self.entry1.set_popdown_strings(interface_ip_list)
 
-	self.clist.column_titles_show()
-	self.clist.set_column_title(0, 'IP')
-	self.clist.set_column_title(1, 'Status')
-	self.clist.set_column_title(2, 'Hostname')
-	self.clist.set_column_width(0, len(' 888.888.888.888 ')*8)
-	self.clist.set_column_width(1, len('Status')*8)
-	self.clist.set_column_width(2, len('Hostname')*8)
-	self.clist.set_column_justification(0, 'center')
-	self.clist.set_column_justification(1, 'center')
-	self.clist.set_column_justification(2, 'center')
+        self.clist.column_titles_show()
+        self.clist.set_column_title(0, 'IP')
+        self.clist.set_column_title(1, 'Status')
+        self.clist.set_column_title(2, 'Hostname')
+        self.clist.set_column_width(0, len(' 888.888.888.888 ')*8)
+        self.clist.set_column_width(1, len('Status')*8)
+        self.clist.set_column_width(2, len('Hostname')*8)
+        self.clist.set_column_justification(0, 'center')
+        self.clist.set_column_justification(1, 'center')
+        self.clist.set_column_justification(2, 'center')
 
         # 顯示視窗畫面
         self.window.show_all()
 
         # 設定事件
-	#dic = {"on_window1_destory" : gtk.main_quit,
-	#	"on_btn1_button_press_event" : self.on_btn1_button_press_event,
-	#	}
+        dic = {	"on_btn1_button_press_event" : self.on_btn1_button_press_event,
+                "on_window1_destory" : gtk.main_quit,
+        }
         # 連結事件
-	#self.UI.signal_autoconnect(dic)
-	self.window.connect('destroy', gtk.main_quit) 
-        self.btn1.connect('clicked', self.on_btn1_button_press_event, None)
+        self.UI.signal_autoconnect(dic)
+        #self.window.connect('destroy', gtk.main_quit)
+        #self.btn1.connect('clicked', self.on_btn1_button_press_event, None)
 
-    def on_btn1_button_press_event(self, widget, event):
+    def on_btn1_button_press_event(self, widget):
         ip_list = gen_ip_list(self.entry1.entry.get_text(), self.entry2.get_text())
-	# test icmp_scan and lookup_hostname function
-	icmp_scan(ip_list)
+        # test icmp_scan and lookup_hostname function
+        icmp_scan(ip_list)
         lookup_hostname(ip_list)
 
 class Dialog:
@@ -77,8 +77,8 @@ class Dialog:
 
         self.warning_dialog.connect('destroy', self.widget_close, None) 
         self.btn2.connect('clicked', self.widget_close, None) 
-	
-	self.message_label.set_text(message)
+
+        self.message_label.set_text(message)
 
         self.warning_dialog.show_all()
 
@@ -97,8 +97,8 @@ def gen_ip_list(ip_start, ip_end):
     else:
         ip_list.append(ip_start)
         ip_list.append(ip_end)
-	clist.append([ip_start, '', ''])
-	clist.append([ip_end, '', ''])
+        clist.append([ip_start, '', ''])
+        clist.append([ip_end, '', ''])
     return ip_list
 
 def icmp_scan(ip_list):
@@ -131,7 +131,7 @@ class ping(Thread):
             igot = re.findall(ping.lifeline,line)
             if igot:
                 self.status = int(igot[0])
-	
+
 def lookup_hostname(ip_list):
     print "In lookup_hostname function.."
     pass

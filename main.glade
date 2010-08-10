@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE glade-interface SYSTEM "glade-2.0.dtd">
-<!--Generated with glade3 3.4.5 on Tue Aug 10 12:56:20 2010 -->
+<!--Generated with glade3 3.4.5 on Tue Aug 10 13:23:10 2010 -->
 <glade-interface>
   <widget class="GtkWindow" id="window1">
+    <signal name="destroy" handler="on_window1_destory"/>
     <child>
       <widget class="GtkVBox" id="vbox1">
         <property name="visible">True</property>
@@ -69,6 +70,7 @@
                 <property name="receives_default">True</property>
                 <property name="label" translatable="yes">Scan</property>
                 <property name="response_id">0</property>
+                <signal name="clicked" handler="on_btn1_button_press_event"/>
               </widget>
               <packing>
                 <property name="position">6</property>
