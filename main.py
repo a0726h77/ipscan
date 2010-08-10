@@ -47,6 +47,11 @@ class Main_Window:
         interface_ip_list = ['', '192.168.0.1']
 	self.entry1.set_popdown_strings(interface_ip_list)
 
+	self.clist.column_titles_show()
+	self.clist.set_column_title(0, 'IP')
+	self.clist.set_column_title(1, 'Status')
+	self.clist.set_column_title(2, 'Hostname')
+
     def on_btn1_button_press_event(self, widget, event):
         ip_list = gen_ip_list(self.entry1.entry.get_text(), self.entry2.get_text())
 	# test icmp_scan and lookup_hostname function
