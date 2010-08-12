@@ -10,9 +10,6 @@ import os
 import time
 import socket
 from netaddr import *
-import fcntl
-import struct
-import array
 try:
     import pygtk
     pygtk.require("2.0")
@@ -136,6 +133,9 @@ def get_all_network_interfaces_ip():
     if "win" in platform:
         pass
     elif "linux" in platform:
+        import fcntl
+        import struct
+        import array
         def get_ip_address(ifname):
             s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
             return socket.inet_ntoa(fcntl.ioctl(
