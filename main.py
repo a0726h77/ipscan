@@ -150,10 +150,10 @@ def get_all_network_interfaces_ip():
         #return [namestr[i:i+32].split('\0', 1)[0] for i in range(0, outbytes, 32)]
 
         iface_list = [namestr[i:i+32].split('\0', 1)[0] for i in range(0, outbytes, 32)]
-	iface_ip_list = []
+        iface_ip_list = []
         for iface in iface_list:
             iface_ip_list.append(get_ip_address(iface))
-	return iface_ip_list
+        return iface_ip_list
     else:
         return ['', '192.168.0.1']
 
