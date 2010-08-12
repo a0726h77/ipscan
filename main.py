@@ -124,7 +124,8 @@ def is_valid_ip(ip):
     try:
         socket.inet_aton(ip)
     except socket.error:
-        print 'illegal ip'
+	#print 'illegal ip'
+	Dialog("illegal ip : %s" % ip)
         return False
     return True
 
