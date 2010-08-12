@@ -172,7 +172,6 @@ def icmp_scan(ip_list):
         pinglist.append(current)
         current.start()
 
-    ping.lifeline = re.compile(r"(\d) received")
     report = ("No response","Partial Response","Alive")
 
     for pingle in pinglist:
@@ -188,6 +187,7 @@ class ping(Thread):
         self.status = -1
     def run(self):
         pingaling = os.popen("ping -q -c2 "+self.ip,"r")
+        ping.lifeline = re.compile(r"(\d) received")
         while 1:
             line = pingaling.readline()
             if not line: break
