@@ -10,17 +10,10 @@ import os
 import time
 import socket
 from netaddr import *
-try:
-    import pygtk
-    pygtk.require("2.0")
-except:
-    pass
-try:
-    import gtk
-    import gtk.glade
-except:
-    sys.exit(1)
-
+import pygtk
+pygtk.require("2.0")
+import gtk
+import gtk.glade
 
 class Main_Window:
     def __init__(self):
