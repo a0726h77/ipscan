@@ -19,11 +19,13 @@ class Main_Window:
     def __init__(self):
         global clist
         # 載入 glade 檔
+        # load glade XML file
         self.gladefile = "main.glade"
         self.UI = gtk.glade.XML(self.gladefile)
         # 載入視窗
         self.window = self.UI.get_widget("window1")
         # 載入元件
+        # load gtk component
         self.btn1 = self.UI.get_widget("button1")
         self.entry1 = self.UI.get_widget("combo1")
         self.entry2 = self.UI.get_widget("entry2")
@@ -31,9 +33,11 @@ class Main_Window:
         self.clist = self.UI.get_widget("clist1")
         clist = self.clist
 
+        # initial combo1 popdown content
         interface_ip_list = [""] + (get_all_network_interfaces_ip())
         self.entry1.set_popdown_strings(interface_ip_list)
 
+        # setting clist column title
         self.clist.column_titles_show()
         self.clist.set_column_title(0, 'IP')
         self.clist.set_column_title(1, 'Status')
@@ -49,10 +53,12 @@ class Main_Window:
         self.window.show_all()
 
         # 設定事件
+        # setting gtk component event
         dic = { "on_btn1_button_press_event" : self.on_btn1_button_press_event,
                 "on_window1_destory" : gtk.main_quit,
         }
         # 連結事件
+        # connect gtk component event
         self.UI.signal_autoconnect(dic)
         #self.window.connect('destroy', gtk.main_quit)
         #self.btn1.connect('clicked', self.on_btn1_button_press_event, None)
@@ -94,6 +100,7 @@ def gen_ip_list(ip_start, ip_end):
         Dialog("Start IP cannot be empty.")
     elif ('' != ip_start) and ('' == ip_end) and (True == is_valid_ip(ip_start)):
         ip_list.append(ip_start)
+	# output to clist
         clist.append([ip_start, '', ''])
     elif ('' != ip_start) and ('' != ip_end) and (True == is_valid_ip(ip_start)) and (True == is_valid_ip(ip_end)):
         try:
@@ -101,8 +108,8 @@ def gen_ip_list(ip_start, ip_end):
             for ip in iprange:
                 # strip subnet ip and broadcast ip
                 if None == re.match(".*\.(255|0)$", str(ip)):
-                    print str(ip)
                     ip_list.append(str(ip))
+	            # output to clist
                     clist.append([str(ip), '', ''])
         except AddrFormatError:
             Dialog("lower bound IP greater than upper bound!")
