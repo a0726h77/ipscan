@@ -205,8 +205,12 @@ class ping(Thread):
         self.ip = ip
         self.status = -1
     def run(self):
-        pingaling = os.popen("ping -q -c2 "+self.ip,"r")
-        ping.lifeline = re.compile(r"(\d) received")
+        if "win" in platform:
+            pingaling = os.popen("ping -n 2 "+self.ip,"r")
+            ping.lifeline = re.compile(r"Received = (\d)")
+        elif "linux" in platform:
+            pingaling = os.popen("ping -q -c2 "+self.ip,"r")
+            ping.lifeline = re.compile(r"(\d) received")
         while 1:
             line = pingaling.readline()
             if not line: break
