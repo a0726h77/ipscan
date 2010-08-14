@@ -74,7 +74,6 @@ class Main_Window:
         lookup_hostname(ip_list)
         print time.ctime()
 
-
 class Dialog:
     def __init__(self, message):
         self.gladefile = "main.glade"
@@ -93,8 +92,7 @@ class Dialog:
     def widget_close(self, widget, event):
         gtk.Window.destroy(self.warning_dialog)
 
-# generate ip list from input entry
-# Not complete !!
+# generate ip range  list from input entry
 def gen_ip_list(ip_start, ip_end):
     global clist
     ip_list = []
@@ -102,7 +100,7 @@ def gen_ip_list(ip_start, ip_end):
         Dialog("Start IP cannot be empty.")
     elif ('' != ip_start) and ('' == ip_end) and (True == is_valid_ip(ip_start)):
         ip_list.append(ip_start)
-	# output to clist
+        # output to clist
         clist.append([ip_start, '', ''])
     elif ('' != ip_start) and ('' != ip_end) and (True == is_valid_ip(ip_start)) and (True == is_valid_ip(ip_end)):
         try:
@@ -111,30 +109,27 @@ def gen_ip_list(ip_start, ip_end):
                 # strip subnet ip and broadcast ip
                 if None == re.match(".*\.(255|0)$", str(ip)):
                     ip_list.append(str(ip))
-	            # output to clist
+                    # output to clist
                     clist.append([str(ip), '', ''])
         except AddrFormatError:
             Dialog("lower bound IP greater than upper bound!")
-
-#        ip_list.append(ip_start)
-#        ip_list.append(ip_end)
-#        clist.append([ip_start, '', ''])
-#        clist.append([ip_end, '', ''])
     return ip_list
 
+# valid ip formate
 def is_valid_ip(ip):
     try:
         socket.inet_aton(ip)
     except socket.error:
-	#print 'illegal ip'
-	Dialog("illegal ip : %s" % ip)
+        #print 'illegal ip'
+        Dialog("illegal ip : %s" % ip)
         return False
     return True
 
 def get_all_network_interfaces_ip():
     if "win" in platform:
+        # use win32com.client to get all network interfaces ip on Windows
         import win32com.client
-	strComputer = "."
+        strComputer = "."
         objWMIService = win32com.client.Dispatch("WbemScripting.SWbemLocator")
         objSWbemServices = objWMIService.ConnectServer(strComputer,"root\cimv2")
         colItems = objSWbemServices.ExecQuery("Select * from Win32_NetworkAdapterConfiguration")
@@ -148,8 +143,8 @@ def get_all_network_interfaces_ip():
             else:
                 for x in z:
                     iface_ip_list.append(x)
-		    #print "IP Address: ", x
-	    #print "MAC Address: ", objItem.MACAddress
+                    #print "IP Address: ", x
+            #print "MAC Address: ", objItem.MACAddress
         return iface_ip_list
     elif "linux" in platform:
         import fcntl
@@ -211,6 +206,9 @@ class ping(Thread):
         elif "linux" in platform:
             pingaling = os.popen("ping -q -c2 "+self.ip,"r")
             ping.lifeline = re.compile(r"(\d) received")
+        else:
+            sys.exit(1)
+
         while 1:
             line = pingaling.readline()
             if not line: break
