@@ -15,6 +15,8 @@ pygtk.require("2.0")
 import gtk
 import gtk.glade
 
+platform = sys.platform
+
 class Main_Window:
     def __init__(self):
         global clist
@@ -130,7 +132,6 @@ def is_valid_ip(ip):
     return True
 
 def get_all_network_interfaces_ip():
-    platform = sys.platform
     if "win" in platform:
         import win32com.client
 	strComputer = "."
