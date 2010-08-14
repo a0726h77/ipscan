@@ -132,7 +132,24 @@ def is_valid_ip(ip):
 def get_all_network_interfaces_ip():
     platform = sys.platform
     if "win" in platform:
-        pass
+        import win32com.client
+	strComputer = "."
+        objWMIService = win32com.client.Dispatch("WbemScripting.SWbemLocator")
+        objSWbemServices = objWMIService.ConnectServer(strComputer,"root\cimv2")
+        colItems = objSWbemServices.ExecQuery("Select * from Win32_NetworkAdapterConfiguration")
+        numOfNics = len(colItems)
+
+        iface_ip_list = []
+        for objItem in colItems:
+            z = objItem.IPAddress
+            if z is None:
+                a = 1
+            else:
+                for x in z:
+                    iface_ip_list.append(x)
+		    #print "IP Address: ", x
+	    #print "MAC Address: ", objItem.MACAddress
+        return iface_ip_list
     elif "linux" in platform:
         import fcntl
         import struct
