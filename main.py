@@ -217,8 +217,20 @@ class ping(Thread):
                 self.status = int(igot[0])
 
 def lookup_hostname(ip_list):
-    print "In lookup_hostname function.."
-    pass
+    global clist
+    pinglist = []
+    for ip in ip_list:
+        current = nmblookup(ip)
+        pinglist.append(current)
+        current.start()
+
+    report = ("No response","Partial Response","Alive")
+
+    for pingle in pinglist:
+        pingle.join()
+        #print "Status from ",pingle.ip,"is",report[pingle.status]
+        if pingle.status:
+            clist.set_text(ip_list.index(pingle.ip), 2, str(pingle.status) )
 
 class nmblookup(Thread):
     def __init__ (self,ip):
@@ -226,14 +238,20 @@ class nmblookup(Thread):
         self.ip = ip
         self.status = -1
     def run(self):
-        pingaling = os.popen("nmblookup -A "+self.ip,"r")
+        if "win" in platform:
+	    pass
+        elif "linux" in platform:
+            pingaling = os.popen("nmblookup -A "+self.ip,"r")
+            ping.lifeline = re.compile(r"\t(\S*)\s*\<20\>.*\<ACTIVE\>")
+        else:
+            sys.exit(1)
+
         while 1:
             line = pingaling.readline()
             if not line: break
-            print line
-            #igot = re.findall(ping.lifeline,line)
-            #if igot:
-            #    self.status = int(igot[0])
+            igot = re.findall(ping.lifeline,line)
+            if igot:
+                self.status = igot[0]
 
 def main():
     gtk.main()
