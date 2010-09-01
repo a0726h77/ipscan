@@ -14,8 +14,14 @@ import pygtk
 pygtk.require("2.0")
 import gtk
 import gtk.glade
+import gobject
+
+gobject.threads_init()
 
 platform = sys.platform
+
+global ip_list
+ip_list = []
 
 class Main_Window:
     def __init__(self):
@@ -68,10 +74,16 @@ class Main_Window:
     def on_btn1_button_press_event(self, widget):
         print time.ctime()
         self.clist.clear()
-        ip_list = gen_ip_list(self.entry1.entry.get_text(), self.entry2.get_text())
+
+        gen_ip_list(self.entry1.entry.get_text(), self.entry2.get_text())    # old...
+        #ip_list = gen_ip_list(self.entry1.entry.get_text(), self.entry2.get_text())
+
         # test icmp_scan and lookup_hostname function
-        icmp_scan(ip_list)
-        lookup_hostname(ip_list)
+        icmp_scan()
+        #icmp_scan(ip_list)    # old...
+        lookup_hostname()
+        #lookup_hostname(ip_list)    # old...
+
         print time.ctime()
 
 class Dialog:
@@ -95,6 +107,7 @@ class Dialog:
 # generate ip range  list from input entry
 def gen_ip_list(ip_start, ip_end):
     global clist
+    global ip_list
     ip_list = []
     if '' == ip_start:
         Dialog("Start IP cannot be empty.")
@@ -113,7 +126,7 @@ def gen_ip_list(ip_start, ip_end):
                     clist.append([str(ip), '', ''])
         except AddrFormatError:
             Dialog("lower bound IP greater than upper bound!")
-    return ip_list
+#    return ip_list
 
 # valid ip formate
 def is_valid_ip(ip):
@@ -178,80 +191,144 @@ def get_all_network_interfaces_ip():
     else:
         return ['', '192.168.0.1']
 
-def icmp_scan(ip_list):
-    global clist
-    pinglist = []
-    for ip in ip_list:
-        current = ping(ip)
-        pinglist.append(current)
-        current.start()
-
-    report = ("No response","Partial Response","Alive")
-
-    for pingle in pinglist:
-        pingle.join()
-        #print "Status from ",pingle.ip,"is",report[pingle.status]
-        if 'Alive' == report[pingle.status]:
-            clist.set_text(ip_list.index(pingle.ip), 1, '●')
-
 class ping(Thread):
-    def __init__ (self,ip):
+    def __init__(self, ip):
         Thread.__init__(self)
         self.ip = ip
-        self.status = -1
+
     def run(self):
         if "win" in platform:
             pingaling = os.popen("ping -n 2 "+self.ip,"r")
-            ping.lifeline = re.compile(r"Received = (\d)")
+            lifeline = re.compile(r"Received = (\d)")
         elif "linux" in platform:
-            pingaling = os.popen("ping -q -c2 "+self.ip,"r")
-            ping.lifeline = re.compile(r"(\d) received")
+            pingaling = os.popen("ping -q -c2 " + self.ip, "r")
+            lifeline = re.compile(r"(\d) received")
         else:
             sys.exit(1)
 
         while 1:
             line = pingaling.readline()
             if not line: break
-            igot = re.findall(ping.lifeline,line)
+            igot = re.findall(lifeline,line)
+            report = ("No response","Partial Response","Alive")
             if igot:
-                self.status = int(igot[0])
+                if 2 == int(igot[0]):
+                    global clist
+                    global ip_list
+                    clist.set_text(ip_list.index(self.ip), 1, '●')
 
-def lookup_hostname(ip_list):
-    global clist
-    pinglist = []
+def icmp_scan():
+    global ip_list
     for ip in ip_list:
-        current = nmblookup(ip)
-        pinglist.append(current)
-        current.start()
+        t = ping(ip)
+        gobject.idle_add(t.start)
 
-    report = ("No response","Partial Response","Alive")
+# old...
+#def icmp(ip_list):
+#    global clist
+#    pinglist = []
+#    for ip in ip_list:
+#        current = ping(ip)
+#        pinglist.append(current)
+#        current.start()
+#
+#    report = ("No response","Partial Response","Alive")
+#
+#    for pingle in pinglist:
+#        pingle.join()
+#        #print "Status from ",pingle.ip,"is",report[pingle.status]
+#        if 'Alive' == report[pingle.status]:
+#            clist.set_text(ip_list.index(pingle.ip), 1, '●')
+#
+#class ping(Thread):
+#    def __init__ (self,ip):
+#        Thread.__init__(self)
+#        self.ip = ip
+#        self.status = -1
+#    def run(self):
+#        if "win" in platform:
+#            pingaling = os.popen("ping -n 2 "+self.ip,"r")
+#            ping.lifeline = re.compile(r"Received = (\d)")
+#        elif "linux" in platform:
+#            pingaling = os.popen("ping -q -c2 "+self.ip,"r")
+#            ping.lifeline = re.compile(r"(\d) received")
+#        else:
+#            sys.exit(1)
+#
+#        while 1:
+#            line = pingaling.readline()
+#            if not line: break
+#            igot = re.findall(ping.lifeline,line)
+#            if igot:
+#                self.status = int(igot[0])
 
-    for pingle in pinglist:
-        pingle.join()
-        #print "Status from ",pingle.ip,"is",report[pingle.status]
-        if pingle.status:
-            clist.set_text(ip_list.index(pingle.ip), 2, str(pingle.status) )
+def lookup_hostname():
+    global ip_list
+    for ip in ip_list:
+        t = nmblookup(ip)
+        gobject.idle_add(t.start)
 
 class nmblookup(Thread):
-    def __init__ (self,ip):
+    def __init__(self, ip):
         Thread.__init__(self)
         self.ip = ip
-        self.status = -1
+
     def run(self):
         if "win" in platform:
-	    pass
+            pass
         elif "linux" in platform:
-            pingaling = os.popen("nmblookup -A "+self.ip,"r")
-            ping.lifeline = re.compile(r"\t(\S*)\s*\<20\>.*\<ACTIVE\>")
+            pingaling = os.popen("nmblookup -A " + self.ip, "r")
+            lifeline = re.compile(r"\t(\S*)\s*\<20\>.*\<ACTIVE\>")
         else:
             sys.exit(1)
 
         while 1:
             line = pingaling.readline()
             if not line: break
-            igot = re.findall(ping.lifeline,line)
+            igot = re.findall(lifeline,line)
             if igot:
-                self.status = igot[0]
+                print igot
+                global clist
+                global ip_list
+                clist.set_text(ip_list.index(self.ip), 2, str(igot[0]) )
+
+# old...
+#def lookup_hostname(ip_list):
+#    global clist
+#    pinglist = []
+#    for ip in ip_list:
+#        current = nmblookup(ip)
+#        pinglist.append(current)
+#        current.start()
+#
+#    report = ("No response","Partial Response","Alive")
+#
+#    for pingle in pinglist:
+#        pingle.join()
+#        #print "Status from ",pingle.ip,"is",report[pingle.status]
+#        if pingle.status:
+#            clist.set_text(ip_list.index(pingle.ip), 2, str(pingle.status) )
+#
+#class nmblookup(Thread):
+#    def __init__ (self,ip):
+#        Thread.__init__(self)
+#        self.ip = ip
+#        self.status = -1
+#    def run(self):
+#        if "win" in platform:
+#            pass
+#        elif "linux" in platform:
+#            pingaling = os.popen("nmblookup -A "+self.ip,"r")
+#            ping.lifeline = re.compile(r"\t(\S*)\s*\<20\>.*\<ACTIVE\>")
+#        else:
+#            sys.exit(1)
+#
+#        while 1:
+#            line = pingaling.readline()
+#            if not line: break
+#            igot = re.findall(ping.lifeline,line)
+#            if igot:
+#                self.status = igot[0]
 
 def main():
     gtk.main()
